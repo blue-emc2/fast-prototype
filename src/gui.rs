@@ -1,4 +1,4 @@
-use iced::{executor, Application, Command, Element, Text};
+use iced::{executor, Application, Column, Command, Element, Text};
 
 pub struct GUI {}
 
@@ -20,6 +20,6 @@ impl Application for GUI {
   }
 
   fn view(&mut self) -> Element<Self::Message> {
-    Text::new("Hello, World!").into()
+    Column::new().push(Text::new("Hello, World!")).into()
   }
 }
