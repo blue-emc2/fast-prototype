@@ -1,8 +1,15 @@
-use iced::TextInput;
-use iced::{executor, text_input, Application, Column, Command, Element, Text};
+use iced::{
+  executor, pane_grid, text_input, Application, Command, Container, Element, Length, PaneGrid,
+  Text, TextInput,
+};
 
 pub struct GUI {
   state2: text_input::State,
+  panes: pane_grid::State<Content>,
+}
+
+enum Content {
+  Split,
 }
 
 #[derive(Debug, Clone)]
@@ -16,9 +23,12 @@ impl Application for GUI {
   type Flags = ();
 
   fn new(_flags: Self::Flags) -> (Self, Command<Self::Message>) {
+    let (panes, _) = pane_grid::State::new(Content::Split);
+
     (
       GUI {
         state2: text_input::State::new(),
+        panes: panes,
       },
       Command::none(),
     )
@@ -40,9 +50,14 @@ impl Application for GUI {
       Message::TextInputChanged,
     );
 
-    Column::new()
-      .push(Text::new("Hello, World!"))
-      .push(input)
+    let pane_grid = PaneGrid::new(&mut self.panes, |pane, content| {
+      pane_grid::Content::new(Text::new("This is some pane"))
+    });
+
+    Container::new(pane_grid)
+      .width(Length::Fill)
+      .height(Length::Fill)
+      .padding(10)
       .into()
   }
 }
