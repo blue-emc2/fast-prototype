@@ -5,11 +5,13 @@ use iced::{
 
 pub struct GUI {
   state2: text_input::State,
-  panes: pane_grid::State<Content>,
+  panes: pane_grid::State<PaneState>,
 }
 
-enum Content {
-  Split,
+#[derive(Debug, Clone)]
+enum PaneState {
+  Init,
+  Init2,
 }
 
 #[derive(Debug, Clone)]
@@ -23,12 +25,17 @@ impl Application for GUI {
   type Flags = ();
 
   fn new(_flags: Self::Flags) -> (Self, Command<Self::Message>) {
-    let (panes, _) = pane_grid::State::new(Content::Split);
+    let state = pane_grid::State::with_configuration(pane_grid::Configuration::Split {
+      axis: pane_grid::Axis::Vertical,
+      ratio: 0.5,
+      a: Box::new(pane_grid::Configuration::Pane(PaneState::Init)),
+      b: Box::new(pane_grid::Configuration::Pane(PaneState::Init2)),
+    });
 
     (
       GUI {
         state2: text_input::State::new(),
-        panes: panes,
+        panes: state,
       },
       Command::none(),
     )
@@ -43,15 +50,18 @@ impl Application for GUI {
   }
 
   fn view(&mut self) -> Element<Self::Message> {
-    let input = TextInput::new(
+    let _input = TextInput::new(
       &mut self.state2,
       "This is the placeholder...",
       "bbb",
       Message::TextInputChanged,
     );
 
-    let pane_grid = PaneGrid::new(&mut self.panes, |pane, content| {
-      pane_grid::Content::new(Text::new("This is some pane"))
+    let pane_grid = PaneGrid::new(&mut self.panes, |_pane, content| {
+      pane_grid::Content::new(match content {
+        PaneState::Init => Text::new("Init"),
+        PaneState::Init2 => Text::new("Init2"),
+      })
     });
 
     Container::new(pane_grid)
