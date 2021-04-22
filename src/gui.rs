@@ -9,12 +9,6 @@ pub struct GUI {
 }
 
 #[derive(Debug, Clone)]
-enum PaneState {
-  LeftPaneInit,
-  RightPaneInit,
-}
-
-#[derive(Debug, Clone)]
 pub enum Message {
   TextInputChanged(String),
 }
@@ -28,8 +22,12 @@ impl Application for GUI {
     let state = pane_grid::State::with_configuration(pane_grid::Configuration::Split {
       axis: pane_grid::Axis::Vertical,
       ratio: 0.5,
-      a: Box::new(pane_grid::Configuration::Pane(Content::new())),
-      b: Box::new(pane_grid::Configuration::Pane(Content::new())),
+      a: Box::new(pane_grid::Configuration::Pane(Content::new(
+        ContentState::Left,
+      ))),
+      b: Box::new(pane_grid::Configuration::Pane(Content::new(
+        ContentState::Right,
+      ))),
     });
 
     (GUI { panes: state }, Command::none())
@@ -56,18 +54,26 @@ impl Application for GUI {
   }
 }
 
+#[derive(Debug, Clone)]
+enum ContentState {
+  Left,
+  Right,
+}
+
 struct Content {
   input_state: text_input::State,
+  position: ContentState,
 }
 
 impl Content {
-  fn new() -> Self {
+  fn new(position: ContentState) -> Self {
     Content {
       input_state: text_input::State::new(),
+      position: position,
     }
   }
 
-  fn view(&mut self) -> Element<Message> {
+  fn view(&mut self) -> Column<Message> {
     let input = TextInput::new(
       &mut self.input_state,
       "This is the placeholder...",
@@ -75,6 +81,9 @@ impl Content {
       Message::TextInputChanged,
     );
 
-    Column::new().push(input).into()
+    match self.position {
+      ContentState::Left => Column::new().push(input).into(),
+      ContentState::Right => Column::new().push(Text::new("I <3 iced!")).into(),
+    }
   }
 }
