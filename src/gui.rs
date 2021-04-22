@@ -1,17 +1,17 @@
+use iced::Column;
 use iced::{
   executor, pane_grid, text_input, Application, Command, Container, Element, Length, PaneGrid,
   Text, TextInput,
 };
 
 pub struct GUI {
-  state2: text_input::State,
-  panes: pane_grid::State<PaneState>,
+  panes: pane_grid::State<Content>,
 }
 
 #[derive(Debug, Clone)]
 enum PaneState {
-  Init,
-  Init2,
+  LeftPaneInit,
+  RightPaneInit,
 }
 
 #[derive(Debug, Clone)]
@@ -28,17 +28,11 @@ impl Application for GUI {
     let state = pane_grid::State::with_configuration(pane_grid::Configuration::Split {
       axis: pane_grid::Axis::Vertical,
       ratio: 0.5,
-      a: Box::new(pane_grid::Configuration::Pane(PaneState::Init)),
-      b: Box::new(pane_grid::Configuration::Pane(PaneState::Init2)),
+      a: Box::new(pane_grid::Configuration::Pane(Content::new())),
+      b: Box::new(pane_grid::Configuration::Pane(Content::new())),
     });
 
-    (
-      GUI {
-        state2: text_input::State::new(),
-        panes: state,
-      },
-      Command::none(),
-    )
+    (GUI { panes: state }, Command::none())
   }
 
   fn title(&self) -> String {
@@ -50,18 +44,8 @@ impl Application for GUI {
   }
 
   fn view(&mut self) -> Element<Self::Message> {
-    let _input = TextInput::new(
-      &mut self.state2,
-      "This is the placeholder...",
-      "bbb",
-      Message::TextInputChanged,
-    );
-
     let pane_grid = PaneGrid::new(&mut self.panes, |_pane, content| {
-      pane_grid::Content::new(match content {
-        PaneState::Init => Text::new("Init"),
-        PaneState::Init2 => Text::new("Init2"),
-      })
+      pane_grid::Content::new(content.view())
     });
 
     Container::new(pane_grid)
@@ -69,5 +53,28 @@ impl Application for GUI {
       .height(Length::Fill)
       .padding(10)
       .into()
+  }
+}
+
+struct Content {
+  input_state: text_input::State,
+}
+
+impl Content {
+  fn new() -> Self {
+    Content {
+      input_state: text_input::State::new(),
+    }
+  }
+
+  fn view(&mut self) -> Element<Message> {
+    let input = TextInput::new(
+      &mut self.input_state,
+      "This is the placeholder...",
+      "bbb",
+      Message::TextInputChanged,
+    );
+
+    Column::new().push(input).into()
   }
 }
