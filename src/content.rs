@@ -27,11 +27,15 @@ impl Content {
       "This is the placeholder...",
       "bbb",
       Message::TextInputChanged,
-    );
+    )
+    .padding(10);
 
     match self.position {
-      ContentState::Left => Column::new().push(input).into(),
-      ContentState::Right => Column::new().push(Text::new("I <3 iced!")).into(),
+      ContentState::Left => Column::new().push(input).padding(5).into(),
+      ContentState::Right => Column::new()
+        .push(Text::new("I <3 iced!"))
+        .padding(5)
+        .into(),
     }
   }
 }

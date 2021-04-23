@@ -42,13 +42,31 @@ impl Application for GUI {
 
   fn view(&mut self) -> Element<Self::Message> {
     let pane_grid = PaneGrid::new(&mut self.panes, |_pane, content| {
-      pane_grid::Content::new(content.view())
-    });
+      pane_grid::Content::new(content.view()).style(style::Pane)
+    })
+    .spacing(10);
 
     Container::new(pane_grid)
       .width(Length::Fill)
       .height(Length::Fill)
-      .padding(10)
+      .padding(5)
       .into()
+  }
+}
+
+mod style {
+  use iced::{container, Color};
+
+  pub struct Pane;
+
+  impl container::StyleSheet for Pane {
+    fn style(&self) -> container::Style {
+      container::Style {
+        border_width: 2.0,
+        border_color: Color::from_rgb(1.0, 0.0, 0.0),
+        border_radius: 5.0,
+        ..Default::default()
+      }
+    }
   }
 }
