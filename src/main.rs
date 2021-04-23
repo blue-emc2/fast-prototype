@@ -1,7 +1,8 @@
-use iced::Application;
-use iced::Settings;
+use iced::{Application, Settings};
 
+mod content;
 mod gui;
+
 use gui::GUI;
 
 pub fn main() -> iced::Result {

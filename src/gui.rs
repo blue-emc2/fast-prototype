@@ -1,8 +1,7 @@
-use iced::Column;
-use iced::{
-  executor, pane_grid, text_input, Application, Command, Container, Element, Length, PaneGrid,
-  Text, TextInput,
-};
+use iced::{executor, pane_grid, Application, Command, Container, Element, Length, PaneGrid};
+
+use crate::content::Content;
+use crate::content::ContentState;
 
 pub struct GUI {
   panes: pane_grid::State<Content>,
@@ -51,39 +50,5 @@ impl Application for GUI {
       .height(Length::Fill)
       .padding(10)
       .into()
-  }
-}
-
-#[derive(Debug, Clone)]
-enum ContentState {
-  Left,
-  Right,
-}
-
-struct Content {
-  input_state: text_input::State,
-  position: ContentState,
-}
-
-impl Content {
-  fn new(position: ContentState) -> Self {
-    Content {
-      input_state: text_input::State::new(),
-      position: position,
-    }
-  }
-
-  fn view(&mut self) -> Column<Message> {
-    let input = TextInput::new(
-      &mut self.input_state,
-      "This is the placeholder...",
-      "bbb",
-      Message::TextInputChanged,
-    );
-
-    match self.position {
-      ContentState::Left => Column::new().push(input).into(),
-      ContentState::Right => Column::new().push(Text::new("I <3 iced!")).into(),
-    }
   }
 }
