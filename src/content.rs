@@ -1,7 +1,6 @@
-use iced::Container;
 use iced::{
-  canvas::{Canvas, Cursor, Frame, Geometry, Path, Program},
-  text_input, Color, Element, Length, Rectangle, TextInput,
+  canvas::{Canvas, Cursor, Frame, Geometry, LineCap, LineJoin, Path, Program, Stroke},
+  text_input, Color, Container, Element, Length, Point, Rectangle, Size, TextInput,
 };
 
 use crate::gui::Message;
@@ -33,7 +32,9 @@ impl Content {
       Message::TextInputChanged,
     )
     .padding(10);
-    let canvas = Canvas::new(Circle { radius: 50.0 });
+    let canvas = Canvas::new(Circle { radius: 50.0 })
+      .width(Length::Fill)
+      .height(Length::Fill);
 
     match self.position {
       ContentState::Left => Container::new(input)
@@ -44,9 +45,7 @@ impl Content {
       ContentState::Right => Container::new(canvas)
         .width(Length::Fill)
         .height(Length::Fill)
-        .padding(20)
-        .center_x()
-        .center_y()
+        .padding(5)
         .into(),
     }
   }
@@ -60,14 +59,25 @@ struct Circle {
 // Then, we implement the `Program` trait
 impl Program<Message> for Circle {
   fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
-    // We prepare a new `Frame`
     let mut frame = Frame::new(bounds.size());
+    let size = Size::new(200.0, 124.0);
 
-    // We create a `Path` representing a simple circle
-    let circle = Path::circle(frame.center(), self.radius);
+    let point = bounds.size();
+    let init_pos = Point {
+      x: (point.width / 2.0) - (size.width / 2.0),
+      y: 10.0,
+    };
+    let rect = Path::rectangle(init_pos, size);
 
-    // And fill it with some color
-    frame.fill(&circle, Color::BLACK);
+    frame.stroke(
+      &rect,
+      Stroke {
+        color: Color::BLACK,
+        width: 2.0,
+        line_cap: LineCap::Round,
+        line_join: LineJoin::Round,
+      },
+    );
 
     // Finally, we produce the geometry
     vec![frame.into_geometry()]
