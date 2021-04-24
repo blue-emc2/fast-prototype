@@ -63,7 +63,7 @@ mod style {
     fn style(&self) -> container::Style {
       container::Style {
         border_width: 2.0,
-        border_color: Color::from_rgb(1.0, 0.0, 0.0),
+        border_color: Color::BLACK,
         border_radius: 5.0,
         ..Default::default()
       }
