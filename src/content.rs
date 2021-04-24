@@ -32,7 +32,7 @@ impl Content {
       Message::TextInputChanged,
     )
     .padding(10);
-    let canvas = Canvas::new(Circle { radius: 50.0 })
+    let canvas = Canvas::new(Node {})
       .width(Length::Fill)
       .height(Length::Fill);
 
@@ -52,12 +52,10 @@ impl Content {
 }
 
 #[derive(Debug)]
-struct Circle {
-  radius: f32,
-}
+struct Node {}
 
 // Then, we implement the `Program` trait
-impl Program<Message> for Circle {
+impl Program<Message> for Node {
   fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
     let mut frame = Frame::new(bounds.size());
     let size = Size::new(200.0, 124.0);
@@ -79,7 +77,6 @@ impl Program<Message> for Circle {
       },
     );
 
-    // Finally, we produce the geometry
     vec![frame.into_geometry()]
   }
 }
