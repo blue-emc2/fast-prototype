@@ -6,5 +6,8 @@ mod gui;
 use gui::GUI;
 
 pub fn main() -> iced::Result {
-  GUI::run(Settings::default())
+  GUI::run(Settings {
+    antialiasing: true,
+    ..Settings::default()
+  })
 }
