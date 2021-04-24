@@ -2,6 +2,7 @@ use iced::{Application, Settings};
 
 mod content;
 mod gui;
+mod node;
 
 use gui::GUI;
 
