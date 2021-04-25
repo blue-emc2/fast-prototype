@@ -2,9 +2,12 @@ use iced::{executor, pane_grid, Application, Command, Container, Element, Length
 
 use crate::content::Content;
 use crate::content::ContentState;
+use crate::node::Node;
+use crate::node::NodeState;
 
 pub struct GUI {
   panes: pane_grid::State<Content>,
+  nodes: Vec<Node>,
 }
 
 #[derive(Debug, Clone)]
@@ -29,7 +32,18 @@ impl Application for GUI {
       ))),
     });
 
-    (GUI { panes: state }, Command::none())
+    // let mut init_node = Node { type: NodeState::Init };
+    let init_node = Node::new(NodeState::Action);
+    let mut nodes = Vec::with_capacity(1);
+    nodes.push(init_node);
+
+    (
+      GUI {
+        panes: state,
+        nodes: nodes,
+      },
+      Command::none(),
+    )
   }
 
   fn title(&self) -> String {
@@ -41,8 +55,10 @@ impl Application for GUI {
   }
 
   fn view(&mut self) -> Element<Self::Message> {
+    let nodes = &self.nodes;
+
     let pane_grid = PaneGrid::new(&mut self.panes, |_pane, content| {
-      pane_grid::Content::new(content.view()).style(style::Pane)
+      pane_grid::Content::new(content.view(nodes)).style(style::Pane)
     })
     .spacing(10);
 
