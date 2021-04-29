@@ -13,10 +13,12 @@ pub enum ContentState {
   Right,
 }
 
+#[derive(Debug)]
 pub struct Content {
   input_state: text_input::State,
   position: ContentState,
   diagram: Diagram,
+  input_value: String,
 }
 
 impl Content {
@@ -25,6 +27,7 @@ impl Content {
       input_state: text_input::State::new(),
       position: position,
       diagram: Diagram {},
+      input_value: String::from(""),
     }
   }
 
@@ -36,7 +39,7 @@ impl Content {
     let input = TextInput::new(
       &mut self.input_state,
       "This is the placeholder...",
-      "bbb",
+      &self.input_value,
       Message::TextInputChanged,
     )
     .padding(10);
@@ -53,6 +56,10 @@ impl Content {
         .padding(5)
         .into(),
     }
+  }
+
+  pub fn update_text_input(&mut self, value: String) {
+    self.input_value = value;
   }
 }
 

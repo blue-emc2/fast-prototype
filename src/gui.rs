@@ -50,7 +50,15 @@ impl Application for GUI {
     String::from("prototype")
   }
 
-  fn update(&mut self, _message: Self::Message, _: &mut iced::Clipboard) -> Command<Self::Message> {
+  fn update(&mut self, message: Self::Message, _: &mut iced::Clipboard) -> Command<Self::Message> {
+    // 本当はcontentにまるごとupdateを移譲したかったがmessageの所有権が渡せなくて都度専用の関数を呼んでいる
+    match message {
+      Message::TextInputChanged(value) => {
+        let (_pane, left_content) = self.panes.iter_mut().nth(0).unwrap();
+        left_content.update_text_input(value);
+      }
+    }
+
     Command::none()
   }
 
