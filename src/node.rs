@@ -1,7 +1,9 @@
+#[derive(Debug, Clone)]
 pub struct Node {
   node_type: NodeState,
 }
 
+#[derive(Debug, Clone)]
 pub enum NodeState {
   Action,
 }
