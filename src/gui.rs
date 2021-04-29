@@ -13,6 +13,7 @@ pub struct GUI {
 #[derive(Debug, Clone)]
 pub enum Message {
   TextInputChanged(String),
+  CreateNode,
 }
 
 impl Application for GUI {
@@ -56,6 +57,10 @@ impl Application for GUI {
       Message::TextInputChanged(value) => {
         let (_pane, left_content) = self.panes.iter_mut().nth(0).unwrap();
         left_content.update_text_input(value);
+      }
+      Message::CreateNode => {
+        let node = Node::new(NodeState::Action);
+        self.nodes.push(node);
       }
     }
 

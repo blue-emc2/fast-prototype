@@ -42,6 +42,7 @@ impl Content {
       &self.input_value,
       Message::TextInputChanged,
     )
+    .on_submit(Message::CreateNode)
     .padding(10);
 
     match position {
