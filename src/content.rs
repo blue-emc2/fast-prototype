@@ -1,6 +1,7 @@
 use crate::node::Node;
 use iced::{
   canvas::{Canvas, Cursor, Frame, Geometry, LineCap, LineJoin, Path, Program, Stroke},
+  pane_grid::Pane,
   text_input, Color, Container, Element, Length, Point, Rectangle, Size, TextInput,
 };
 
@@ -27,7 +28,7 @@ impl Content {
     }
   }
 
-  pub fn view(&mut self, _nodes: &Vec<Node>) -> Element<Message> {
+  pub fn view(&mut self, _pane: Pane, _nodes: &Vec<Node>) -> Element<Message> {
     let position = self.position;
     let canvas = Canvas::new(self.diagram)
       .width(Length::Fill)

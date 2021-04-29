@@ -57,8 +57,8 @@ impl Application for GUI {
   fn view(&mut self) -> Element<Self::Message> {
     let nodes = &self.nodes;
 
-    let pane_grid = PaneGrid::new(&mut self.panes, |_pane, content| {
-      pane_grid::Content::new(content.view(nodes)).style(style::Pane)
+    let pane_grid = PaneGrid::new(&mut self.panes, |pane, content| {
+      pane_grid::Content::new(content.view(pane, nodes)).style(style::Pane)
     })
     .spacing(10);
 
