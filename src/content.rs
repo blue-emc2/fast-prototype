@@ -17,7 +17,6 @@ pub enum ContentState {
 pub struct Content {
   input_state: text_input::State,
   position: ContentState,
-  diagram: Diagram,
   input_value: String,
 }
 
@@ -26,14 +25,19 @@ impl Content {
     Content {
       input_state: text_input::State::new(),
       position: position,
-      diagram: Diagram {},
       input_value: String::from(""),
     }
   }
 
-  pub fn view(&mut self, _pane: Pane, _nodes: &Vec<Node>) -> Element<Message> {
+  pub fn view(&mut self, _pane: Pane, nodes: &Vec<Node>) -> Element<Message> {
     let position = self.position;
-    let canvas = Canvas::new(self.diagram)
+    let diagram = Diagram {
+      state: DiagramState {
+        nodes: nodes.to_vec(),
+      },
+    };
+
+    let canvas = Canvas::new(diagram)
       .width(Length::Fill)
       .height(Length::Fill);
     let input = TextInput::new(
@@ -64,30 +68,49 @@ impl Content {
   }
 }
 
-#[derive(Debug, Clone, Copy)]
-struct Diagram {}
+const SIZE_WIDTH: f32 = 150.0;
+const SIZE_HEIGHT: f32 = 74.0;
+
+#[derive(Debug)]
+struct DiagramState {
+  nodes: Vec<Node>,
+}
+
+#[derive(Debug)]
+struct Diagram {
+  state: DiagramState,
+}
 
 impl Program<Message> for Diagram {
   fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
     let mut frame = Frame::new(bounds.size());
-    let size = Size::new(200.0, 124.0);
-
     let point = bounds.size();
-    let init_pos = Point {
-      x: (point.width / 2.0) - (size.width / 2.0),
-      y: 10.0,
-    };
-    let rect = Path::rectangle(init_pos, size);
+    let size = Size::new(SIZE_WIDTH, SIZE_HEIGHT);
+    let x = (point.width / 2.0) - (size.width / 2.0);
+    let mut offset = 0.0;
+    let padding = 10.0;
+    let mut last_pos_y = (SIZE_HEIGHT * offset) + padding;
 
-    frame.stroke(
-      &rect,
-      Stroke {
-        color: Color::BLACK,
-        width: 2.0,
-        line_cap: LineCap::Round,
-        line_join: LineJoin::Round,
-      },
-    );
+    for _node in &self.state.nodes {
+      let init_pos = Point {
+        x: x,
+        y: last_pos_y,
+      };
+
+      let rect = Path::rectangle(init_pos, size);
+      frame.stroke(
+        &rect,
+        Stroke {
+          color: Color::BLACK,
+          width: 1.0,
+          line_cap: LineCap::Round,
+          line_join: LineJoin::Round,
+        },
+      );
+
+      offset += 1.0;
+      last_pos_y += (SIZE_HEIGHT * offset) + padding;
+    }
 
     vec![frame.into_geometry()]
   }

@@ -35,8 +35,10 @@ impl Application for GUI {
 
     // let mut init_node = Node { type: NodeState::Init };
     let init_node = Node::new(NodeState::Action);
-    let mut nodes = Vec::with_capacity(1);
+    let second_node = Node::new(NodeState::Action);
+    let mut nodes = Vec::with_capacity(0);
     nodes.push(init_node);
+    nodes.push(second_node);
 
     (
       GUI {
