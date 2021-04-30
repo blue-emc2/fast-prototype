@@ -63,8 +63,15 @@ impl Content {
     }
   }
 
-  pub fn update_text_input(&mut self, value: String) {
-    self.input_value = value;
+  pub fn update(&mut self, message: Message) {
+    match message {
+      Message::TextInputChanged(value) => {
+        self.input_value = value;
+      } // Message::CreateNode => {
+        //   let node = Node::new(NodeState::Action);
+        //   self.nodes.push(node);
+        // }
+    }
   }
 }
 

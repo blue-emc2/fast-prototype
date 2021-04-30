@@ -54,16 +54,8 @@ impl Application for GUI {
   }
 
   fn update(&mut self, message: Self::Message, _: &mut iced::Clipboard) -> Command<Self::Message> {
-    // 本当はcontentにまるごとupdateを移譲したかったがmessageの所有権が渡せなくて都度専用の関数を呼んでいる
-    match message {
-      Message::TextInputChanged(value) => {
-        let (_pane, left_content) = self.panes.iter_mut().nth(0).unwrap();
-        left_content.update_text_input(value);
-      }
-      Message::CreateNode => {
-        let node = Node::new(NodeState::Action);
-        self.nodes.push(node);
-      }
+    for (pane, content) in self.panes.iter() {
+      content.update(message);
     }
 
     Command::none()
