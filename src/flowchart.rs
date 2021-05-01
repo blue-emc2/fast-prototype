@@ -4,6 +4,8 @@ use iced::{
 };
 
 use crate::gui::Message;
+use crate::node::Node;
+use crate::node::NodeState;
 
 const SIZE_WIDTH: f32 = 150.0;
 const SIZE_HEIGHT: f32 = 74.0;
@@ -11,6 +13,13 @@ const SIZE_HEIGHT: f32 = 74.0;
 #[derive(Debug)]
 pub struct FlowChart {
   diagrams: Vec<Diagram>,
+}
+
+impl FlowChart {
+  pub fn push_node(&mut self, node: Node) {
+    let diagram = Diagram::from(node);
+    self.diagrams.push(diagram);
+  }
 }
 
 impl Default for FlowChart {
@@ -57,4 +66,14 @@ impl Program<Message> for FlowChart {
 }
 
 #[derive(Debug)]
-struct Diagram {}
+struct Diagram {
+  node_type: NodeState,
+}
+
+impl From<Node> for Diagram {
+  fn from(node: Node) -> Diagram {
+    Diagram {
+      node_type: node.node_type(),
+    }
+  }
+}

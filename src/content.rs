@@ -67,6 +67,7 @@ impl Content {
       Message::CreateNode => {
         let node = Node::new(NodeState::Action);
         self.nodes.push(node);
+        self.flowchart.push_node(node);
       }
     }
   }
