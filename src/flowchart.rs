@@ -34,19 +34,17 @@ impl Program<Message> for FlowChart {
   fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
     let mut frame = Frame::new(bounds.size());
     let point = bounds.size();
-    let size = Size::new(SIZE_WIDTH, SIZE_HEIGHT);
-    let x = (point.width / 2.0) - (size.width / 2.0);
     let mut offset = 0.0;
     let padding = 10.0;
     let mut last_pos_y = (SIZE_HEIGHT * offset) + padding;
 
-    for _node in self.diagrams.iter() {
+    for d in self.diagrams.iter() {
       let init_pos = Point {
-        x: x,
+        x: (point.width / 2.0) - (d.size.width / 2.0),
         y: last_pos_y,
       };
 
-      let rect = Path::rectangle(init_pos, size);
+      let rect = Path::rectangle(init_pos, d.size);
       frame.stroke(
         &rect,
         Stroke {
@@ -68,12 +66,14 @@ impl Program<Message> for FlowChart {
 #[derive(Debug)]
 struct Diagram {
   node_type: NodeState,
+  size: Size,
 }
 
 impl From<Node> for Diagram {
   fn from(node: Node) -> Diagram {
     Diagram {
       node_type: node.node_type(),
+      size: Size::new(SIZE_WIDTH, SIZE_HEIGHT),
     }
   }
 }
