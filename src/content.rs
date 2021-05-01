@@ -1,11 +1,9 @@
 use crate::node::Node;
-use iced::{
-  canvas::{Canvas, Cursor, Frame, Geometry, LineCap, LineJoin, Path, Program, Stroke},
-  pane_grid::Pane,
-  text_input, Color, Container, Element, Length, Point, Rectangle, Size, TextInput,
-};
+use iced::{canvas::Canvas, pane_grid::Pane, text_input, Container, Element, Length, TextInput};
 
+use crate::flowchart::FlowChart;
 use crate::gui::Message;
+use crate::node::NodeState;
 
 #[derive(Debug, Clone, Copy)]
 pub enum ContentState {
@@ -18,6 +16,8 @@ pub struct Content {
   input_state: text_input::State,
   position: ContentState,
   input_value: String,
+  nodes: Vec<Node>,
+  flowchart: FlowChart,
 }
 
 impl Content {
@@ -26,18 +26,14 @@ impl Content {
       input_state: text_input::State::new(),
       position: position,
       input_value: String::from(""),
+      nodes: Vec::new(),
+      flowchart: Default::default(),
     }
   }
 
-  pub fn view(&mut self, _pane: Pane, nodes: &Vec<Node>) -> Element<Message> {
+  pub fn view(&mut self, _pane: Pane) -> Element<Message> {
     let position = self.position;
-    let diagram = Diagram {
-      state: DiagramState {
-        nodes: nodes.to_vec(),
-      },
-    };
-
-    let canvas = Canvas::new(diagram)
+    let canvas = Canvas::new(&mut self.flowchart)
       .width(Length::Fill)
       .height(Length::Fill);
     let input = TextInput::new(
@@ -63,62 +59,15 @@ impl Content {
     }
   }
 
-  pub fn update(&mut self, message: Message) {
+  pub fn update(&mut self, message: &Message) {
     match message {
       Message::TextInputChanged(value) => {
-        self.input_value = value;
-      } // Message::CreateNode => {
-        //   let node = Node::new(NodeState::Action);
-        //   self.nodes.push(node);
-        // }
+        self.input_value = value.to_string();
+      }
+      Message::CreateNode => {
+        let node = Node::new(NodeState::Action);
+        self.nodes.push(node);
+      }
     }
-  }
-}
-
-const SIZE_WIDTH: f32 = 150.0;
-const SIZE_HEIGHT: f32 = 74.0;
-
-#[derive(Debug)]
-struct DiagramState {
-  nodes: Vec<Node>,
-}
-
-#[derive(Debug)]
-struct Diagram {
-  state: DiagramState,
-}
-
-impl Program<Message> for Diagram {
-  fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
-    let mut frame = Frame::new(bounds.size());
-    let point = bounds.size();
-    let size = Size::new(SIZE_WIDTH, SIZE_HEIGHT);
-    let x = (point.width / 2.0) - (size.width / 2.0);
-    let mut offset = 0.0;
-    let padding = 10.0;
-    let mut last_pos_y = (SIZE_HEIGHT * offset) + padding;
-
-    for _node in &self.state.nodes {
-      let init_pos = Point {
-        x: x,
-        y: last_pos_y,
-      };
-
-      let rect = Path::rectangle(init_pos, size);
-      frame.stroke(
-        &rect,
-        Stroke {
-          color: Color::BLACK,
-          width: 1.0,
-          line_cap: LineCap::Round,
-          line_join: LineJoin::Round,
-        },
-      );
-
-      offset += 1.0;
-      last_pos_y += (SIZE_HEIGHT * offset) + padding;
-    }
-
-    vec![frame.into_geometry()]
   }
 }

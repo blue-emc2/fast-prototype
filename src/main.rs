@@ -1,6 +1,7 @@
 use iced::{Application, Settings};
 
 mod content;
+mod flowchart;
 mod gui;
 mod node;
 

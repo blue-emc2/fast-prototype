@@ -2,12 +2,9 @@ use iced::{executor, pane_grid, Application, Command, Container, Element, Length
 
 use crate::content::Content;
 use crate::content::ContentState;
-use crate::node::Node;
-use crate::node::NodeState;
 
 pub struct GUI {
   panes: pane_grid::State<Content>,
-  nodes: Vec<Node>,
 }
 
 #[derive(Debug, Clone)]
@@ -33,20 +30,7 @@ impl Application for GUI {
       ))),
     });
 
-    // let mut init_node = Node { type: NodeState::Init };
-    let init_node = Node::new(NodeState::Action);
-    let second_node = Node::new(NodeState::Action);
-    let mut nodes = Vec::with_capacity(0);
-    nodes.push(init_node);
-    nodes.push(second_node);
-
-    (
-      GUI {
-        panes: state,
-        nodes: nodes,
-      },
-      Command::none(),
-    )
+    (GUI { panes: state }, Command::none())
   }
 
   fn title(&self) -> String {
@@ -54,18 +38,16 @@ impl Application for GUI {
   }
 
   fn update(&mut self, message: Self::Message, _: &mut iced::Clipboard) -> Command<Self::Message> {
-    for (pane, content) in self.panes.iter() {
-      content.update(message);
+    for (_pane, content) in self.panes.iter_mut() {
+      content.update(&message);
     }
 
     Command::none()
   }
 
   fn view(&mut self) -> Element<Self::Message> {
-    let nodes = &self.nodes;
-
     let pane_grid = PaneGrid::new(&mut self.panes, |pane, content| {
-      pane_grid::Content::new(content.view(pane, nodes)).style(style::Pane)
+      pane_grid::Content::new(content.view(pane)).style(style::Pane)
     })
     .spacing(10);
 
