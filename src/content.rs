@@ -22,12 +22,17 @@ pub struct Content {
 
 impl Content {
   pub fn new(position: ContentState) -> Self {
+    let start_node = Node::new(NodeState::Init);
+    let nodes = vec![start_node];
+    let mut flowchart: FlowChart = Default::default();
+    flowchart.push_node(start_node);
+
     Content {
       input_state: text_input::State::new(),
       position: position,
       input_value: String::from(""),
-      nodes: Vec::new(),
-      flowchart: Default::default(),
+      nodes: nodes,
+      flowchart: flowchart,
     }
   }
 

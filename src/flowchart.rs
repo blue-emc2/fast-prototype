@@ -9,6 +9,7 @@ use crate::node::NodeState;
 
 const SIZE_WIDTH: f32 = 150.0;
 const SIZE_HEIGHT: f32 = 74.0;
+const RADIUS: f32 = 15.0;
 
 #[derive(Debug)]
 pub struct FlowChart {
@@ -33,30 +34,32 @@ impl Default for FlowChart {
 impl Program<Message> for FlowChart {
   fn draw(&self, bounds: Rectangle, _cursor: Cursor) -> Vec<Geometry> {
     let mut frame = Frame::new(bounds.size());
-    let point = bounds.size();
-    let mut offset = 0.0;
-    let padding = 10.0;
-    let mut last_pos_y = (SIZE_HEIGHT * offset) + padding;
+    let center = frame.center();
 
     for d in self.diagrams.iter() {
       let init_pos = Point {
-        x: (point.width / 2.0) - (d.size.width / 2.0),
-        y: last_pos_y,
+        x: center.x,
+        y: 40.0,
       };
 
-      let rect = Path::rectangle(init_pos, d.size);
-      frame.stroke(
-        &rect,
-        Stroke {
-          color: Color::BLACK,
-          width: 1.0,
-          line_cap: LineCap::Round,
-          line_join: LineJoin::Round,
-        },
-      );
-
-      offset += 1.0;
-      last_pos_y += (SIZE_HEIGHT * offset) + padding;
+      match d.node_type {
+        NodeState::Init => {
+          let circle = Path::circle(init_pos, RADIUS);
+          frame.fill(&circle, Color::BLACK);
+        }
+        NodeState::Action => {
+          let rect = Path::rectangle(init_pos, d.size);
+          frame.stroke(
+            &rect,
+            Stroke {
+              color: Color::BLACK,
+              width: 1.0,
+              line_cap: LineCap::Round,
+              line_join: LineJoin::Round,
+            },
+          );
+        }
+      }
     }
 
     vec![frame.into_geometry()]
