@@ -14,12 +14,15 @@ const RADIUS: f32 = 15.0;
 #[derive(Debug)]
 pub struct FlowChart {
   diagrams: Vec<Diagram>,
+  diagram_created: usize,
 }
 
 impl FlowChart {
   pub fn push_node(&mut self, node: Node) {
-    let diagram = Diagram::from(node);
+    let mut diagram = Diagram::from(node);
+    diagram.index = self.diagram_created;
     self.diagrams.push(diagram);
+    self.diagram_created += 1;
   }
 }
 
@@ -27,6 +30,7 @@ impl Default for FlowChart {
   fn default() -> Self {
     Self {
       diagrams: Vec::new(),
+      diagram_created: 0,
     }
   }
 }
@@ -37,7 +41,7 @@ impl Program<Message> for FlowChart {
     let center = frame.center();
 
     for d in self.diagrams.iter() {
-      let init_pos = Point {
+      let mut init_pos = Point {
         x: center.x,
         y: 40.0,
       };
@@ -48,6 +52,7 @@ impl Program<Message> for FlowChart {
           frame.fill(&circle, Color::BLACK);
         }
         NodeState::Action => {
+          init_pos.y = (init_pos.y + d.size.height) * d.index as f32;
           let rect = Path::rectangle(init_pos, d.size);
           frame.stroke(
             &rect,
@@ -70,6 +75,7 @@ impl Program<Message> for FlowChart {
 struct Diagram {
   node_type: NodeState,
   size: Size,
+  index: usize,
 }
 
 impl From<Node> for Diagram {
@@ -77,6 +83,7 @@ impl From<Node> for Diagram {
     Diagram {
       node_type: node.node_type(),
       size: Size::new(SIZE_WIDTH, SIZE_HEIGHT),
+      index: 0,
     }
   }
 }
