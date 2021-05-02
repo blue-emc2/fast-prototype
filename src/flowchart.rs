@@ -10,6 +10,7 @@ use crate::node::NodeState;
 const SIZE_WIDTH: f32 = 150.0;
 const SIZE_HEIGHT: f32 = 74.0;
 const RADIUS: f32 = 15.0;
+const INIT_POS: f32 = 40.0;
 
 #[derive(Debug)]
 pub struct FlowChart {
@@ -43,7 +44,7 @@ impl Program<Message> for FlowChart {
     for d in self.diagrams.iter() {
       let mut init_pos = Point {
         x: center.x,
-        y: 40.0,
+        y: INIT_POS,
       };
 
       match d.node_type {
@@ -52,6 +53,7 @@ impl Program<Message> for FlowChart {
           frame.fill(&circle, Color::BLACK);
         }
         NodeState::Action => {
+          init_pos.x = init_pos.x - (d.size.width / 2.0); // 四角の中心とpaneの中心をあわせる
           init_pos.y = (init_pos.y + d.size.height) * d.index as f32;
           let rect = Path::rectangle(init_pos, d.size);
           frame.stroke(
