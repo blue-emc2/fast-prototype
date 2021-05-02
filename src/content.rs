@@ -70,9 +70,11 @@ impl Content {
         self.input_value = value.to_string();
       }
       Message::CreateNode => {
-        let node = Node::new(NodeState::Action);
-        self.nodes.push(node);
-        self.flowchart.push_node(node);
+        if !self.input_value.is_empty() {
+          let node = Node::new(NodeState::Action);
+          self.nodes.push(node);
+          self.flowchart.push_node(node);
+        }
       }
     }
   }
