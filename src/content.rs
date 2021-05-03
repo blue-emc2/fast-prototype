@@ -74,6 +74,7 @@ impl Content {
           let node = Node::new(NodeState::Action);
           self.nodes.push(node);
           self.flowchart.push_node(&node, &self.input_value);
+          self.input_value = String::new();
         }
       }
     }
