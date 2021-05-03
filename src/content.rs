@@ -25,7 +25,7 @@ impl Content {
     let start_node = Node::new(NodeState::Init);
     let nodes = vec![start_node];
     let mut flowchart: FlowChart = Default::default();
-    flowchart.push_node(start_node);
+    flowchart.push_node(&start_node, &String::new());
 
     Content {
       input_state: text_input::State::new(),
@@ -73,7 +73,7 @@ impl Content {
         if !self.input_value.is_empty() {
           let node = Node::new(NodeState::Action);
           self.nodes.push(node);
-          self.flowchart.push_node(node);
+          self.flowchart.push_node(&node, &self.input_value);
         }
       }
     }

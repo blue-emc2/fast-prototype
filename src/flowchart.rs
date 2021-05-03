@@ -1,5 +1,5 @@
 use iced::{
-  canvas::{Cursor, Frame, Geometry, LineCap, LineJoin, Path, Program, Stroke},
+  canvas::{Cursor, Frame, Geometry, LineCap, LineJoin, Path, Program, Stroke, Text},
   Color, Point, Rectangle, Size,
 };
 
@@ -19,9 +19,10 @@ pub struct FlowChart {
 }
 
 impl FlowChart {
-  pub fn push_node(&mut self, node: Node) {
-    let mut diagram = Diagram::from(node);
+  pub fn push_node(&mut self, node: &Node, content: &String) {
+    let mut diagram = Diagram::from((node, content));
     diagram.index = self.diagram_created;
+
     self.diagrams.push(diagram);
     self.diagram_created += 1;
   }
@@ -65,6 +66,15 @@ impl Program<Message> for FlowChart {
               line_join: LineJoin::Round,
             },
           );
+
+          frame.fill_text(Text {
+            content: d.content.to_string(),
+            position: Point {
+              x: init_pos.x,
+              y: init_pos.y,
+            },
+            ..Default::default()
+          });
         }
       }
     }
@@ -78,14 +88,16 @@ struct Diagram {
   node_type: NodeState,
   size: Size,
   index: usize,
+  content: String,
 }
 
-impl From<Node> for Diagram {
-  fn from(node: Node) -> Diagram {
+impl From<(&Node, &String)> for Diagram {
+  fn from(tuple: (&Node, &String)) -> Diagram {
     Diagram {
-      node_type: node.node_type(),
+      node_type: tuple.0.node_type(),
       size: Size::new(SIZE_WIDTH, SIZE_HEIGHT),
       index: 0,
+      content: tuple.1.to_string(),
     }
   }
 }
