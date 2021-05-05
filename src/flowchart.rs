@@ -42,6 +42,22 @@ impl Program<Message> for FlowChart {
     let mut frame = Frame::new(bounds.size());
     let center = frame.center();
 
+    // ノードを結ぶ線を引く
+    // let line = Path::line(
+    //   Point {
+    //     x: center.x,
+    //     y: 0.0,
+    //   },
+    //   center,
+    // );
+    // frame.stroke(
+    //   &line,
+    //   Stroke {
+    //     ..Default::default()
+    //   },
+    // );
+
+    // ノードを描画する
     for d in self.diagrams.iter() {
       let mut init_pos = Point {
         x: center.x,
