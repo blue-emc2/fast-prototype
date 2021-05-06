@@ -84,7 +84,7 @@ impl Program<Message> for FlowChart {
           );
 
           frame.fill_text(Text {
-            content: d.content,
+            content: d.content.to_string(), // 値をコピーして所有権ごと渡す
             position: Point {
               x: init_pos.x,
               y: init_pos.y,
