@@ -19,7 +19,7 @@ pub struct FlowChart {
 }
 
 impl FlowChart {
-  pub fn push_node(&mut self, node: &Node, content: &String) {
+  pub fn push_node(&mut self, node: &Node, content: &str) {
     let mut diagram = Diagram::from((node, content));
     diagram.index = self.diagram_created;
 
@@ -84,7 +84,7 @@ impl Program<Message> for FlowChart {
           );
 
           frame.fill_text(Text {
-            content: d.content.to_string(),
+            content: d.content,
             position: Point {
               x: init_pos.x,
               y: init_pos.y,
@@ -107,8 +107,8 @@ struct Diagram {
   content: String,
 }
 
-impl From<(&Node, &String)> for Diagram {
-  fn from(tuple: (&Node, &String)) -> Diagram {
+impl From<(&Node, &str)> for Diagram {
+  fn from(tuple: (&Node, &str)) -> Diagram {
     Diagram {
       node_type: tuple.0.node_type(),
       size: Size::new(SIZE_WIDTH, SIZE_HEIGHT),
