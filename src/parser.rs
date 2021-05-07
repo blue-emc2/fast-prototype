@@ -5,6 +5,11 @@ pub struct Parser {}
 impl Parser {
   pub fn parse(token: &str) -> Result<NodeState, String> {
     let chars = token.replace(" ", "").chars().collect::<Vec<char>>();
+
+    if chars.len() == 1 {
+      return Ok(NodeState::Action);
+    }
+
     match chars[1] {
       '?' => Ok(NodeState::Decision),
       _ => Ok(NodeState::Action),
@@ -29,7 +34,7 @@ mod tests {
   }
 
   #[test]
-  fn test_node_state_action_from_A() {
+  fn test_node_state_action_from_a() {
     let state = Parser::parse("A");
     assert_eq!(state, Ok(NodeState::Action));
   }
