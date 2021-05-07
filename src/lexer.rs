@@ -1,9 +1,9 @@
 use crate::node::NodeState;
 
-pub struct Parser {}
+pub struct Lexer {}
 
-impl Parser {
-  pub fn parse(token: &str) -> Result<NodeState, String> {
+impl Lexer {
+  pub fn scan(token: &str) -> Result<NodeState, String> {
     let chars = token.replace(" ", "").chars().collect::<Vec<char>>();
 
     if chars.len() == 1 {
@@ -23,25 +23,25 @@ mod tests {
 
   #[test]
   fn test_node_state_action_from_hoge() {
-    let state = Parser::parse("hoge");
+    let state = Lexer::scan("hoge");
     assert_eq!(state, Ok(NodeState::Action));
   }
 
   #[test]
   fn test_node_state_decision_from_a_b_c() {
-    let state = Parser::parse("a ? b : c");
+    let state = Lexer::scan("a ? b : c");
     assert_eq!(state, Ok(NodeState::Decision));
   }
 
   #[test]
   fn test_node_state_action_from_a() {
-    let state = Parser::parse("A");
+    let state = Lexer::scan("A");
     assert_eq!(state, Ok(NodeState::Action));
   }
 
   #[test]
   fn test_node_state_decision_from_abc_d_e() {
-    let state = Parser::parse("abc ? d : e");
+    let state = Lexer::scan("abc ? d : e");
     assert_eq!(state, Ok(NodeState::Decision));
   }
 }

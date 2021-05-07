@@ -3,6 +3,7 @@ use iced::{Application, Settings};
 mod content;
 mod flowchart;
 mod gui;
+mod lexer;
 mod node;
 
 use gui::GUI;
