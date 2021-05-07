@@ -38,4 +38,10 @@ mod tests {
     let state = Parser::parse("A");
     assert_eq!(state, Ok(NodeState::Action));
   }
+
+  #[test]
+  fn test_node_state_decision_from_abc_d_e() {
+    let state = Parser::parse("abc ? d : e");
+    assert_eq!(state, Ok(NodeState::Decision));
+  }
 }
