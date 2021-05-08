@@ -3,17 +3,20 @@ use crate::node::NodeState;
 pub struct Lexer {}
 
 impl Lexer {
-  pub fn scan(token: &str) -> Result<Vec<NodeState>, String> {
-    let chars = token.replace(" ", "").chars().collect::<Vec<char>>();
+  pub fn scan(input: &str) -> Result<Vec<NodeState>, String> {
+    let mut result = Vec::new();
+    let token_iter = input.split_whitespace();
+    for token in token_iter {
+      let state = match token {
+        "?" => NodeState::Decision,
+        ":" => NodeState::None,
+        _ => NodeState::Action,
+      };
 
-    if chars.len() == 1 {
-      return Ok(vec![NodeState::Action]);
+      result.push(state);
     }
 
-    match chars[1] {
-      '?' => Ok(vec![NodeState::Decision]),
-      _ => Ok(vec![NodeState::Action]),
-    }
+    Ok(result)
   }
 }
 
@@ -30,7 +33,16 @@ mod tests {
   #[test]
   fn test_node_state_decision_from_a_b_c() {
     let state = Lexer::scan("a ? b : c");
-    assert_eq!(state, Ok(vec![NodeState::Decision]));
+    assert_eq!(
+      state,
+      Ok(vec![
+        NodeState::Action,
+        NodeState::Decision,
+        NodeState::Action,
+        NodeState::None,
+        NodeState::Action,
+      ])
+    );
   }
 
   #[test]
@@ -42,6 +54,15 @@ mod tests {
   #[test]
   fn test_node_state_decision_from_abc_d_e() {
     let state = Lexer::scan("abc ? d : e");
-    assert_eq!(state, Ok(vec![NodeState::Decision]));
+    assert_eq!(
+      state,
+      Ok(vec![
+        NodeState::Action,
+        NodeState::Decision,
+        NodeState::Action,
+        NodeState::None,
+        NodeState::Action,
+      ])
+    );
   }
 }
