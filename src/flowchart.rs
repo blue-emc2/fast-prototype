@@ -92,6 +92,8 @@ impl Program<Message> for FlowChart {
             ..Default::default()
           });
         }
+        NodeState::Decision => {}
+        NodeState::None => {}
       }
     }
 

@@ -3,10 +3,12 @@ pub struct Node {
   node_type: NodeState,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum NodeState {
   Init,
   Action,
+  None,
+  Decision,
 }
 
 impl Node {
