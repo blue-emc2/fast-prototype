@@ -3,6 +3,7 @@ use iced::{canvas::Canvas, pane_grid::Pane, text_input, Container, Element, Leng
 
 use crate::flowchart::FlowChart;
 use crate::gui::Message;
+use crate::lexer::Lexer;
 use crate::node::NodeState;
 
 #[derive(Debug, Clone, Copy)]
@@ -71,10 +72,19 @@ impl Content {
       }
       Message::CreateNode => {
         if !self.input_value.is_empty() {
-          let node = Node::new(NodeState::Action);
-          self.nodes.push(node);
-          self.flowchart.push_node(&node, &self.input_value);
-          self.input_value = String::new();
+          let result = Lexer::scan(&self.input_value);
+
+          match result {
+            Ok(nodes) => {
+              for node in nodes {
+                let node = Node::new(node);
+                self.nodes.push(node);
+                self.flowchart.push_node(&node, &self.input_value);
+              }
+              self.input_value = String::new();
+            }
+            Err(_e) => println!("error"),
+          }
         }
       }
     }
