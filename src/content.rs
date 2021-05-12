@@ -1,5 +1,8 @@
 use crate::node::Node;
-use iced::{canvas::Canvas, pane_grid::Pane, text_input, Container, Element, Length, TextInput};
+use iced::{
+  canvas::Canvas, pane_grid::Pane, text_input, Align, Column, Container, Element, Length, Text,
+  TextInput,
+};
 
 use crate::flowchart::FlowChart;
 use crate::gui::Message;
@@ -51,8 +54,16 @@ impl Content {
     .on_submit(Message::CreateNode)
     .padding(10);
 
+    let mut children = vec![input.into()];
+    for _node in self.nodes.iter() {
+      children.push(Text::new("hoge").into())
+    }
+    let column = Column::with_children(children)
+      .width(Length::Fill)
+      .align_items(Align::Center);
+
     match position {
-      ContentState::Left => Container::new(input)
+      ContentState::Left => Container::new(column)
         .width(Length::Fill)
         .height(Length::Fill)
         .padding(5)
