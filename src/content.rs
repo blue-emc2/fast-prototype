@@ -92,7 +92,7 @@ impl Content {
                 self.nodes.push(node);
                 self.flowchart.push_node(&node, &self.input_value);
               }
-              self.input_value = String::new();
+              self.input_value.clear();
             }
             Err(_e) => println!("error"),
           }
