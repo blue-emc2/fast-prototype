@@ -1,16 +1,16 @@
-use crate::node::NodeState;
+use crate::node::NodeType;
 
 pub struct Lexer {}
 
 impl Lexer {
-  pub fn scan(input: &str) -> Result<Vec<NodeState>, String> {
+  pub fn scan(input: &str) -> Result<Vec<NodeType>, String> {
     let mut result = Vec::new();
     let token_iter = input.split_whitespace();
     for token in token_iter {
       let state = match token {
-        "?" => NodeState::Decision,
-        ":" => NodeState::None,
-        _ => NodeState::Action,
+        "?" => NodeType::Decision,
+        ":" => NodeType::None,
+        _ => NodeType::Action,
       };
 
       result.push(state);
@@ -27,7 +27,7 @@ mod tests {
   #[test]
   fn test_node_state_action_from_hoge() {
     let state = Lexer::scan("hoge");
-    assert_eq!(state, Ok(vec![NodeState::Action]));
+    assert_eq!(state, Ok(vec![NodeType::Action]));
   }
 
   #[test]
@@ -36,11 +36,11 @@ mod tests {
     assert_eq!(
       state,
       Ok(vec![
-        NodeState::Action,
-        NodeState::Decision,
-        NodeState::Action,
-        NodeState::None,
-        NodeState::Action,
+        NodeType::Action,
+        NodeType::Decision,
+        NodeType::Action,
+        NodeType::None,
+        NodeType::Action,
       ])
     );
   }
@@ -48,7 +48,7 @@ mod tests {
   #[test]
   fn test_node_state_action_from_a() {
     let state = Lexer::scan("A");
-    assert_eq!(state, Ok(vec![NodeState::Action]));
+    assert_eq!(state, Ok(vec![NodeType::Action]));
   }
 
   #[test]
@@ -57,11 +57,11 @@ mod tests {
     assert_eq!(
       state,
       Ok(vec![
-        NodeState::Action,
-        NodeState::Decision,
-        NodeState::Action,
-        NodeState::None,
-        NodeState::Action,
+        NodeType::Action,
+        NodeType::Decision,
+        NodeType::Action,
+        NodeType::None,
+        NodeType::Action,
       ])
     );
   }

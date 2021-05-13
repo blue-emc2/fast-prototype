@@ -5,7 +5,7 @@ use iced::{
 
 use crate::gui::Message;
 use crate::node::Node;
-use crate::node::NodeState;
+use crate::node::NodeType;
 
 const SIZE_WIDTH: f32 = 150.0;
 const SIZE_HEIGHT: f32 = 74.0;
@@ -65,11 +65,11 @@ impl Program<Message> for FlowChart {
       };
 
       match d.node_type {
-        NodeState::Init => {
+        NodeType::Init => {
           let circle = Path::circle(init_pos, RADIUS);
           frame.fill(&circle, Color::BLACK);
         }
-        NodeState::Action => {
+        NodeType::Action => {
           init_pos.x = init_pos.x - (d.size.width / 2.0); // 四角の中心とpaneの中心をあわせる
           init_pos.y = (init_pos.y + d.size.height) * d.index as f32;
           let rect = Path::rectangle(init_pos, d.size);
@@ -92,8 +92,8 @@ impl Program<Message> for FlowChart {
             ..Default::default()
           });
         }
-        NodeState::Decision => {}
-        NodeState::None => {}
+        NodeType::Decision => {}
+        NodeType::None => {}
       }
     }
 
@@ -103,7 +103,7 @@ impl Program<Message> for FlowChart {
 
 #[derive(Debug)]
 struct Diagram {
-  node_type: NodeState,
+  node_type: NodeType,
   size: Size,
   index: usize,
   content: String,

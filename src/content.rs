@@ -7,7 +7,7 @@ use iced::{
 use crate::flowchart::FlowChart;
 use crate::gui::Message;
 use crate::lexer::Lexer;
-use crate::node::NodeState;
+use crate::node::NodeType;
 
 #[derive(Debug, Clone, Copy)]
 pub enum ContentState {
@@ -26,7 +26,7 @@ pub struct Content {
 
 impl Content {
   pub fn new(position: ContentState) -> Self {
-    let start_node = Node::new(NodeState::Init);
+    let start_node = Node::new(NodeType::Init);
     let nodes = vec![start_node];
     let mut flowchart: FlowChart = Default::default();
     flowchart.push_node(&start_node, &String::new());
