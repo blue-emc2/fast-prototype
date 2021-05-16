@@ -1,18 +1,12 @@
 use crate::node::Node;
 use iced::{
-  canvas::Canvas, pane_grid::Pane, text_input, Align, Button, Column, Container, Element, Font,
-  Length, Row, Text, TextInput,
+  canvas::Canvas, pane_grid::Pane, text_input, Align, Column, Container, Element, Length, TextInput,
 };
 
 use crate::flowchart::FlowChart;
 use crate::gui::Message;
 use crate::lexer::Lexer;
 use crate::node::NodeType;
-
-const ICONS: Font = Font::External {
-  name: "Icons",
-  bytes: include_bytes!("../fonts/icons.ttf"),
-};
 
 #[derive(Debug, Clone, Copy)]
 pub enum ContentState {

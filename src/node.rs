@@ -1,5 +1,5 @@
 use crate::gui::Message;
-use iced::{button, Align, Button, Element, Row, Text};
+use iced::{button, Align, Button, Element, Font, HorizontalAlignment, Length, Row, Text};
 
 #[derive(Debug, Clone)]
 pub struct Node {
@@ -46,9 +46,26 @@ impl Node {
         let row = Row::new()
           .align_items(Align::Center)
           .push(Text::new(self.text_input.clone()))
-          .push(Button::new(edit_button, Text::new("Press me!")));
+          .push(Button::new(edit_button, edit_icon()));
         row.into()
       }
     }
   }
+}
+
+const ICONS: Font = Font::External {
+  name: "Icons",
+  bytes: include_bytes!("../fonts/icons.ttf"),
+};
+
+fn icon(unicode: char) -> Text {
+  Text::new(&unicode.to_string())
+    .font(ICONS)
+    .width(Length::Units(20))
+    .horizontal_alignment(HorizontalAlignment::Center)
+    .size(20)
+}
+
+fn edit_icon() -> Text {
+  icon('\u{F303}')
 }
