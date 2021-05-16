@@ -44,8 +44,10 @@ impl Node {
     match &mut self.state {
       NodeState::Idle { edit_button } => {
         let row = Row::new()
+          .spacing(24)
+          .padding(24)
           .align_items(Align::Center)
-          .push(Text::new(self.text_input.clone()))
+          .push(Text::new(self.text_input.clone()).width(Length::Fill))
           .push(Button::new(edit_button, edit_icon()));
         row.into()
       }
