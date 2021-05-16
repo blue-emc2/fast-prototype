@@ -1,13 +1,18 @@
 use crate::node::Node;
 use iced::{
-  canvas::Canvas, pane_grid::Pane, text_input, Align, Column, Container, Element, Length, Text,
-  TextInput,
+  canvas::Canvas, pane_grid::Pane, text_input, Align, Button, Column, Container, Element, Font,
+  Length, Row, Text, TextInput,
 };
 
 use crate::flowchart::FlowChart;
 use crate::gui::Message;
 use crate::lexer::Lexer;
 use crate::node::NodeType;
+
+const ICONS: Font = Font::External {
+  name: "Icons",
+  bytes: include_bytes!("../fonts/icons.ttf"),
+};
 
 #[derive(Debug, Clone, Copy)]
 pub enum ContentState {
@@ -26,15 +31,15 @@ pub struct Content {
 
 impl Content {
   pub fn new(position: ContentState) -> Self {
-    let start_node = Node::new(NodeType::Init);
-    let nodes = vec![start_node];
+    let start_node = Node::new(NodeType::Init, Default::default());
     let mut flowchart: FlowChart = Default::default();
-    flowchart.push_node(&start_node, &String::new());
+    flowchart.push(&start_node);
+    let nodes = vec![start_node];
 
     Content {
       input_state: text_input::State::new(),
       position: position,
-      input_value: String::from(""),
+      input_value: Default::default(),
       nodes: nodes,
       flowchart: flowchart,
     }
@@ -55,12 +60,13 @@ impl Content {
     .padding(10);
 
     let mut children = vec![input.into()];
-    for _node in self.nodes.iter() {
-      children.push(Text::new("hoge").into())
+    for node in self.nodes.iter_mut() {
+      children.push(node.view());
     }
     let column = Column::with_children(children)
+      .spacing(20)
       .width(Length::Fill)
-      .align_items(Align::Center);
+      .align_items(Align::Start);
 
     match position {
       ContentState::Left => Container::new(column)
@@ -88,9 +94,9 @@ impl Content {
           match result {
             Ok(nodes) => {
               for node in nodes {
-                let node = Node::new(node);
+                let node = Node::new(node, self.input_value.clone());
+                self.flowchart.push(&node);
                 self.nodes.push(node);
-                self.flowchart.push_node(&node, &self.input_value);
               }
               self.input_value.clear();
             }

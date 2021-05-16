@@ -18,9 +18,20 @@ pub struct FlowChart {
   diagram_created: usize,
 }
 
+#[derive(Debug)]
+struct Diagram {
+  size: Size,
+  index: usize,
+  node: Node,
+}
+
 impl FlowChart {
-  pub fn push_node(&mut self, node: &Node, content: &str) {
-    let mut diagram = Diagram::from((node, content));
+  pub fn push(&mut self, node: &Node) {
+    let mut diagram = Diagram {
+      size: Size::new(SIZE_WIDTH, SIZE_HEIGHT),
+      index: 0,
+      node: node.clone(),
+    };
     diagram.index = self.diagram_created;
 
     self.diagrams.push(diagram);
@@ -31,7 +42,7 @@ impl FlowChart {
 impl Default for FlowChart {
   fn default() -> Self {
     Self {
-      diagrams: Vec::new(),
+      diagrams: Default::default(),
       diagram_created: 0,
     }
   }
@@ -64,7 +75,11 @@ impl Program<Message> for FlowChart {
         y: INIT_POS,
       };
 
-      match d.node_type {
+      let node = &d.node;
+      let node_type = node.node_type;
+      let content = node.text_input.clone();
+
+      match node_type {
         NodeType::Init => {
           let circle = Path::circle(init_pos, RADIUS);
           frame.fill(&circle, Color::BLACK);
@@ -84,7 +99,7 @@ impl Program<Message> for FlowChart {
           );
 
           frame.fill_text(Text {
-            content: d.content.to_string(), // 値をコピーして所有権ごと渡す
+            content: content,
             position: Point {
               x: init_pos.x,
               y: init_pos.y,
@@ -101,21 +116,12 @@ impl Program<Message> for FlowChart {
   }
 }
 
-#[derive(Debug)]
-struct Diagram {
-  node_type: NodeType,
-  size: Size,
-  index: usize,
-  content: String,
-}
-
-impl From<(&Node, &str)> for Diagram {
-  fn from(tuple: (&Node, &str)) -> Diagram {
+impl From<&Node> for Diagram {
+  fn from(node: &Node) -> Diagram {
     Diagram {
-      node_type: tuple.0.node_type(),
       size: Size::new(SIZE_WIDTH, SIZE_HEIGHT),
       index: 0,
-      content: tuple.1.to_string(),
+      node: node.clone(),
     }
   }
 }
