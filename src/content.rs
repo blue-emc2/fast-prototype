@@ -54,7 +54,11 @@ impl Content {
     .padding(10);
 
     let mut children = vec![input.into()];
-    for node in self.nodes.iter_mut() {
+    for node in self
+      .nodes
+      .iter_mut()
+      .filter(|node| node.node_type != NodeType::Init)
+    {
       children.push(node.view());
     }
     let column = Column::with_children(children)
