@@ -21,7 +21,7 @@ impl Application for GUI {
   fn new(_flags: Self::Flags) -> (Self, Command<Self::Message>) {
     let state = pane_grid::State::with_configuration(pane_grid::Configuration::Split {
       axis: pane_grid::Axis::Vertical,
-      ratio: 0.5,
+      ratio: 0.4,
       a: Box::new(pane_grid::Configuration::Pane(Content::new(
         ContentState::Left,
       ))),
