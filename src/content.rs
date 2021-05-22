@@ -1,6 +1,7 @@
 use crate::node::Node;
 use iced::{
-  canvas::Canvas, pane_grid::Pane, text_input, Align, Column, Container, Element, Length, TextInput,
+  canvas::Canvas, pane_grid::Pane, scrollable, text_input, Align, Column, Container, Element,
+  Length, Scrollable, TextInput,
 };
 
 use crate::flowchart::FlowChart;
@@ -21,11 +22,12 @@ pub struct Content {
   input_value: String,
   nodes: Vec<Node>,
   flowchart: FlowChart,
+  scroll: scrollable::State,
 }
 
 impl Content {
   pub fn new(position: ContentState) -> Self {
-    let start_node = Node::new(NodeType::Init, Default::default());
+    let start_node = Node::new(NodeType::Init, "start".to_string());
     let mut flowchart: FlowChart = Default::default();
     flowchart.push(&start_node);
     let nodes = vec![start_node];
@@ -36,6 +38,7 @@ impl Content {
       input_value: Default::default(),
       nodes: nodes,
       flowchart: flowchart,
+      scroll: scrollable::State::new(),
     }
   }
 
@@ -44,6 +47,24 @@ impl Content {
     let canvas = Canvas::new(&mut self.flowchart)
       .width(Length::Fill)
       .height(Length::Fill);
+
+    let mut children = vec![];
+    for node in self.nodes.iter_mut() {
+      children.push(node.view());
+    }
+    let column = Column::with_children(children)
+      .spacing(20)
+      .width(Length::Fill)
+      .align_items(Align::Start);
+
+    let scroll = Scrollable::new(&mut self.scroll)
+      .width(Length::Fill)
+      .spacing(20)
+      .align_items(Align::Center)
+      .push(column);
+
+    let input_content = Container::new(scroll);
+
     let input = TextInput::new(
       &mut self.input_state,
       "This is the placeholder...",
@@ -52,26 +73,10 @@ impl Content {
     )
     .on_submit(Message::CreateNode)
     .padding(10);
-
-    let mut children = vec![input.into()];
-    for node in self
-      .nodes
-      .iter_mut()
-      .filter(|node| node.node_type != NodeType::Init)
-    {
-      children.push(node.view());
-    }
-    let column = Column::with_children(children)
-      .spacing(20)
-      .width(Length::Fill)
-      .align_items(Align::Start);
+    let left_content = Column::new().padding(5).push(input).push(input_content);
 
     match position {
-      ContentState::Left => Container::new(column)
-        .width(Length::Fill)
-        .height(Length::Fill)
-        .padding(5)
-        .into(),
+      ContentState::Left => left_content.into(),
       ContentState::Right => Container::new(canvas)
         .width(Length::Fill)
         .height(Length::Fill)
