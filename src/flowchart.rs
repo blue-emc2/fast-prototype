@@ -53,6 +53,10 @@ impl Program<Message> for FlowChart {
     let mut frame = Frame::new(bounds.size());
     let center = frame.center();
 
+    println!("{:?}", bounds.size());
+    let rect = Path::rectangle(Point::new(0.0, 0.0), bounds.size());
+    frame.fill(&rect, Color::from_rgb(0.3, 0.4, 0.3));
+
     // ノードを結ぶ線を引く
     // let line = Path::line(
     //   Point {
